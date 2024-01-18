@@ -55,6 +55,7 @@
             HostPanel = new FlowLayoutPanel();
             statusStrip1 = new StatusStrip();
             lblErrors = new ToolStripStatusLabel();
+            toolStripStatusLabel1 = new ToolStripStatusLabel();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -174,7 +175,7 @@
             // splitContainer2
             // 
             splitContainer2.Dock = DockStyle.Fill;
-            splitContainer2.Location = new Point(0, 64);
+            splitContainer2.Location = new Point(0, 59);
             splitContainer2.Name = "splitContainer2";
             // 
             // splitContainer2.Panel1
@@ -187,7 +188,7 @@
             // 
             splitContainer2.Panel2.Controls.Add(txtResponse);
             splitContainer2.Panel2MinSize = 0;
-            splitContainer2.Size = new Size(758, 490);
+            splitContainer2.Size = new Size(758, 495);
             splitContainer2.SplitterDistance = 389;
             splitContainer2.TabIndex = 8;
             // 
@@ -200,7 +201,7 @@
             tabControl1.Location = new Point(0, 0);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(389, 490);
+            tabControl1.Size = new Size(389, 495);
             tabControl1.TabIndex = 4;
             tabControl1.SelectedIndexChanged += tabControl1_SelectedIndexChanged;
             // 
@@ -210,7 +211,7 @@
             HeaderTab.Location = new Point(4, 24);
             HeaderTab.Name = "HeaderTab";
             HeaderTab.Padding = new Padding(3);
-            HeaderTab.Size = new Size(381, 462);
+            HeaderTab.Size = new Size(381, 467);
             HeaderTab.TabIndex = 0;
             HeaderTab.Text = "Header";
             HeaderTab.UseVisualStyleBackColor = true;
@@ -222,7 +223,7 @@
             txtHeader.Dock = DockStyle.Fill;
             txtHeader.Location = new Point(3, 3);
             txtHeader.Name = "txtHeader";
-            txtHeader.Size = new Size(375, 456);
+            txtHeader.Size = new Size(375, 461);
             txtHeader.TabIndex = 3;
             txtHeader.Text = "";
             // 
@@ -232,7 +233,7 @@
             BodyTab.Location = new Point(4, 24);
             BodyTab.Name = "BodyTab";
             BodyTab.Padding = new Padding(3);
-            BodyTab.Size = new Size(381, 462);
+            BodyTab.Size = new Size(381, 467);
             BodyTab.TabIndex = 1;
             BodyTab.Text = "Body";
             BodyTab.UseVisualStyleBackColor = true;
@@ -244,7 +245,7 @@
             txtBody.Location = new Point(3, 3);
             txtBody.Name = "txtBody";
             txtBody.ShowSelectionMargin = true;
-            txtBody.Size = new Size(375, 456);
+            txtBody.Size = new Size(375, 461);
             txtBody.TabIndex = 0;
             txtBody.Text = "";
             // 
@@ -253,7 +254,7 @@
             CurlTab.Controls.Add(txtCurl);
             CurlTab.Location = new Point(4, 24);
             CurlTab.Name = "CurlTab";
-            CurlTab.Size = new Size(381, 462);
+            CurlTab.Size = new Size(381, 467);
             CurlTab.TabIndex = 2;
             CurlTab.Text = "Curl";
             CurlTab.UseVisualStyleBackColor = true;
@@ -267,7 +268,7 @@
             txtCurl.Name = "txtCurl";
             txtCurl.ReadOnly = true;
             txtCurl.ShowSelectionMargin = true;
-            txtCurl.Size = new Size(381, 462);
+            txtCurl.Size = new Size(381, 467);
             txtCurl.TabIndex = 1;
             txtCurl.Text = "";
             // 
@@ -277,7 +278,7 @@
             txtResponse.Location = new Point(0, 0);
             txtResponse.Name = "txtResponse";
             txtResponse.ShowSelectionMargin = true;
-            txtResponse.Size = new Size(365, 490);
+            txtResponse.Size = new Size(365, 495);
             txtResponse.TabIndex = 5;
             txtResponse.Text = "";
             // 
@@ -287,7 +288,7 @@
             panel3.Controls.Add(txtUrl);
             panel3.Controls.Add(cboMethod);
             panel3.Dock = DockStyle.Top;
-            panel3.Location = new Point(0, 32);
+            panel3.Location = new Point(0, 27);
             panel3.Name = "panel3";
             panel3.Size = new Size(758, 32);
             panel3.TabIndex = 1;
@@ -328,14 +329,14 @@
             panel5.Dock = DockStyle.Top;
             panel5.Location = new Point(0, 0);
             panel5.Name = "panel5";
-            panel5.Size = new Size(758, 32);
+            panel5.Size = new Size(758, 27);
             panel5.TabIndex = 0;
             // 
             // button1
             // 
             button1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             button1.Cursor = Cursors.Hand;
-            button1.Location = new Point(681, 4);
+            button1.Location = new Point(681, 2);
             button1.Name = "button1";
             button1.Size = new Size(74, 25);
             button1.TabIndex = 8;
@@ -347,12 +348,13 @@
             HostPanel.Dock = DockStyle.Left;
             HostPanel.Location = new Point(0, 0);
             HostPanel.Name = "HostPanel";
-            HostPanel.Size = new Size(608, 32);
+            HostPanel.Padding = new Padding(0, 1, 0, 0);
+            HostPanel.Size = new Size(608, 27);
             HostPanel.TabIndex = 7;
             // 
             // statusStrip1
             // 
-            statusStrip1.Items.AddRange(new ToolStripItem[] { lblErrors });
+            statusStrip1.Items.AddRange(new ToolStripItem[] { lblErrors, toolStripStatusLabel1 });
             statusStrip1.Location = new Point(5, 562);
             statusStrip1.Name = "statusStrip1";
             statusStrip1.Size = new Size(989, 22);
@@ -361,9 +363,17 @@
             // 
             // lblErrors
             // 
+            lblErrors.BackColor = SystemColors.Control;
             lblErrors.Name = "lblErrors";
             lblErrors.Size = new Size(12, 17);
             lblErrors.Text = "-";
+            // 
+            // toolStripStatusLabel1
+            // 
+            toolStripStatusLabel1.BackColor = SystemColors.Control;
+            toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            toolStripStatusLabel1.Size = new Size(166, 17);
+            toolStripStatusLabel1.Text = "Api Buddy by Generali FedDev";
             // 
             // Main
             // 
@@ -433,5 +443,6 @@
         private RichTextBox txtCurl;
         private Panel panel5;
         private Button button1;
+        private ToolStripStatusLabel toolStripStatusLabel1;
     }
 }
