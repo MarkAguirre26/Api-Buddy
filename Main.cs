@@ -47,7 +47,8 @@ namespace Api_Buddy
         public Main()
         {
             InitializeComponent();
-
+            splitContainer2.SplitterDistance = 100;
+            splitContainer2.SplitterDistance = splitContainer2.Width / 2;
 
         }
 
@@ -519,8 +520,8 @@ namespace Api_Buddy
         {
             //if (isLoadingOpen == false)
             //{
-                //processRequest();
-                ExecuteCurlCommand();
+            //processRequest();
+            ExecuteCurlCommand();
             //}
             //else
             //{

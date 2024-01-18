@@ -50,6 +50,8 @@
             cmdSend = new Button();
             txtUrl = new TextBox();
             cboMethod = new ComboBox();
+            panel5 = new Panel();
+            button1 = new Button();
             HostPanel = new FlowLayoutPanel();
             statusStrip1 = new StatusStrip();
             lblErrors = new ToolStripStatusLabel();
@@ -69,6 +71,7 @@
             BodyTab.SuspendLayout();
             CurlTab.SuspendLayout();
             panel3.SuspendLayout();
+            panel5.SuspendLayout();
             statusStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -86,7 +89,7 @@
             // 
             splitContainer1.Panel2.Controls.Add(panel2);
             splitContainer1.Size = new Size(989, 554);
-            splitContainer1.SplitterDistance = 351;
+            splitContainer1.SplitterDistance = 227;
             splitContainer1.TabIndex = 0;
             // 
             // panel1
@@ -97,12 +100,13 @@
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(351, 554);
+            panel1.Size = new Size(227, 554);
             panel1.TabIndex = 0;
             // 
             // treeView
             // 
             treeView.Dock = DockStyle.Fill;
+            treeView.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
             treeView.ImageIndex = 0;
             treeView.ImageList = imageList1;
             treeView.Location = new Point(0, 23);
@@ -110,7 +114,7 @@
             treeView.SelectedImageIndex = 0;
             treeView.ShowLines = false;
             treeView.ShowPlusMinus = false;
-            treeView.Size = new Size(351, 531);
+            treeView.Size = new Size(227, 531);
             treeView.TabIndex = 1;
             treeView.AfterCollapse += treeView_AfterCollapse;
             treeView.AfterExpand += treeView_AfterExpand;
@@ -131,13 +135,15 @@
             imageList1.Images.SetKeyName(3, "next_icon.png");
             imageList1.Images.SetKeyName(4, "folder_icons.png");
             imageList1.Images.SetKeyName(5, "folder_open.png");
+            imageList1.Images.SetKeyName(6, "get_.jpg");
+            imageList1.Images.SetKeyName(7, "post_.jpg");
             // 
             // txtSearchNode
             // 
             txtSearchNode.Dock = DockStyle.Top;
             txtSearchNode.Location = new Point(0, 0);
             txtSearchNode.Name = "txtSearchNode";
-            txtSearchNode.Size = new Size(351, 23);
+            txtSearchNode.Size = new Size(227, 23);
             txtSearchNode.TabIndex = 0;
             txtSearchNode.TextChanged += textBox1_TextChanged;
             txtSearchNode.KeyDown += txtSearchNode_KeyDown;
@@ -149,7 +155,7 @@
             panel2.Dock = DockStyle.Fill;
             panel2.Location = new Point(0, 0);
             panel2.Name = "panel2";
-            panel2.Size = new Size(634, 554);
+            panel2.Size = new Size(758, 554);
             panel2.TabIndex = 0;
             // 
             // panel4
@@ -158,29 +164,31 @@
             panel4.AutoSize = true;
             panel4.Controls.Add(splitContainer2);
             panel4.Controls.Add(panel3);
-            panel4.Controls.Add(HostPanel);
+            panel4.Controls.Add(panel5);
             panel4.Dock = DockStyle.Fill;
             panel4.Location = new Point(0, 0);
             panel4.Name = "panel4";
-            panel4.Size = new Size(634, 554);
+            panel4.Size = new Size(758, 554);
             panel4.TabIndex = 0;
             // 
             // splitContainer2
             // 
             splitContainer2.Dock = DockStyle.Fill;
-            splitContainer2.Location = new Point(0, 57);
+            splitContainer2.Location = new Point(0, 64);
             splitContainer2.Name = "splitContainer2";
-            splitContainer2.Orientation = Orientation.Horizontal;
             // 
             // splitContainer2.Panel1
             // 
+            splitContainer2.Panel1.BackColor = Color.White;
             splitContainer2.Panel1.Controls.Add(tabControl1);
+            splitContainer2.Panel1MinSize = 0;
             // 
             // splitContainer2.Panel2
             // 
             splitContainer2.Panel2.Controls.Add(txtResponse);
-            splitContainer2.Size = new Size(634, 497);
-            splitContainer2.SplitterDistance = 179;
+            splitContainer2.Panel2MinSize = 0;
+            splitContainer2.Size = new Size(758, 490);
+            splitContainer2.SplitterDistance = 389;
             splitContainer2.TabIndex = 8;
             // 
             // tabControl1
@@ -192,7 +200,7 @@
             tabControl1.Location = new Point(0, 0);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(634, 179);
+            tabControl1.Size = new Size(389, 490);
             tabControl1.TabIndex = 4;
             tabControl1.SelectedIndexChanged += tabControl1_SelectedIndexChanged;
             // 
@@ -202,18 +210,19 @@
             HeaderTab.Location = new Point(4, 24);
             HeaderTab.Name = "HeaderTab";
             HeaderTab.Padding = new Padding(3);
-            HeaderTab.Size = new Size(626, 151);
+            HeaderTab.Size = new Size(381, 462);
             HeaderTab.TabIndex = 0;
             HeaderTab.Text = "Header";
             HeaderTab.UseVisualStyleBackColor = true;
             // 
             // txtHeader
             // 
+            txtHeader.BackColor = Color.White;
             txtHeader.BorderStyle = BorderStyle.None;
             txtHeader.Dock = DockStyle.Fill;
             txtHeader.Location = new Point(3, 3);
             txtHeader.Name = "txtHeader";
-            txtHeader.Size = new Size(620, 145);
+            txtHeader.Size = new Size(375, 456);
             txtHeader.TabIndex = 3;
             txtHeader.Text = "";
             // 
@@ -223,7 +232,7 @@
             BodyTab.Location = new Point(4, 24);
             BodyTab.Name = "BodyTab";
             BodyTab.Padding = new Padding(3);
-            BodyTab.Size = new Size(626, 151);
+            BodyTab.Size = new Size(381, 462);
             BodyTab.TabIndex = 1;
             BodyTab.Text = "Body";
             BodyTab.UseVisualStyleBackColor = true;
@@ -234,7 +243,8 @@
             txtBody.Dock = DockStyle.Fill;
             txtBody.Location = new Point(3, 3);
             txtBody.Name = "txtBody";
-            txtBody.Size = new Size(620, 145);
+            txtBody.ShowSelectionMargin = true;
+            txtBody.Size = new Size(375, 456);
             txtBody.TabIndex = 0;
             txtBody.Text = "";
             // 
@@ -243,18 +253,21 @@
             CurlTab.Controls.Add(txtCurl);
             CurlTab.Location = new Point(4, 24);
             CurlTab.Name = "CurlTab";
-            CurlTab.Size = new Size(626, 151);
+            CurlTab.Size = new Size(381, 462);
             CurlTab.TabIndex = 2;
             CurlTab.Text = "Curl";
             CurlTab.UseVisualStyleBackColor = true;
             // 
             // txtCurl
             // 
+            txtCurl.BackColor = Color.White;
             txtCurl.BorderStyle = BorderStyle.None;
             txtCurl.Dock = DockStyle.Fill;
             txtCurl.Location = new Point(0, 0);
             txtCurl.Name = "txtCurl";
-            txtCurl.Size = new Size(626, 151);
+            txtCurl.ReadOnly = true;
+            txtCurl.ShowSelectionMargin = true;
+            txtCurl.Size = new Size(381, 462);
             txtCurl.TabIndex = 1;
             txtCurl.Text = "";
             // 
@@ -263,7 +276,8 @@
             txtResponse.Dock = DockStyle.Fill;
             txtResponse.Location = new Point(0, 0);
             txtResponse.Name = "txtResponse";
-            txtResponse.Size = new Size(634, 314);
+            txtResponse.ShowSelectionMargin = true;
+            txtResponse.Size = new Size(365, 490);
             txtResponse.TabIndex = 5;
             txtResponse.Text = "";
             // 
@@ -273,16 +287,16 @@
             panel3.Controls.Add(txtUrl);
             panel3.Controls.Add(cboMethod);
             panel3.Dock = DockStyle.Top;
-            panel3.Location = new Point(0, 25);
+            panel3.Location = new Point(0, 32);
             panel3.Name = "panel3";
-            panel3.Size = new Size(634, 32);
+            panel3.Size = new Size(758, 32);
             panel3.TabIndex = 1;
             // 
             // cmdSend
             // 
             cmdSend.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             cmdSend.Cursor = Cursors.Hand;
-            cmdSend.Location = new Point(557, 4);
+            cmdSend.Location = new Point(681, 4);
             cmdSend.Name = "cmdSend";
             cmdSend.Size = new Size(74, 25);
             cmdSend.TabIndex = 2;
@@ -295,7 +309,7 @@
             txtUrl.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             txtUrl.Location = new Point(86, 5);
             txtUrl.Name = "txtUrl";
-            txtUrl.Size = new Size(465, 23);
+            txtUrl.Size = new Size(589, 23);
             txtUrl.TabIndex = 1;
             // 
             // cboMethod
@@ -307,12 +321,33 @@
             cboMethod.Size = new Size(78, 23);
             cboMethod.TabIndex = 0;
             // 
+            // panel5
+            // 
+            panel5.Controls.Add(button1);
+            panel5.Controls.Add(HostPanel);
+            panel5.Dock = DockStyle.Top;
+            panel5.Location = new Point(0, 0);
+            panel5.Name = "panel5";
+            panel5.Size = new Size(758, 32);
+            panel5.TabIndex = 0;
+            // 
+            // button1
+            // 
+            button1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            button1.Cursor = Cursors.Hand;
+            button1.Location = new Point(681, 4);
+            button1.Name = "button1";
+            button1.Size = new Size(74, 25);
+            button1.TabIndex = 8;
+            button1.Text = "Save";
+            button1.UseVisualStyleBackColor = true;
+            // 
             // HostPanel
             // 
-            HostPanel.Dock = DockStyle.Top;
+            HostPanel.Dock = DockStyle.Left;
             HostPanel.Location = new Point(0, 0);
             HostPanel.Name = "HostPanel";
-            HostPanel.Size = new Size(634, 25);
+            HostPanel.Size = new Size(608, 32);
             HostPanel.TabIndex = 7;
             // 
             // statusStrip1
@@ -364,6 +399,7 @@
             CurlTab.ResumeLayout(false);
             panel3.ResumeLayout(false);
             panel3.PerformLayout();
+            panel5.ResumeLayout(false);
             statusStrip1.ResumeLayout(false);
             statusStrip1.PerformLayout();
             ResumeLayout(false);
@@ -395,5 +431,7 @@
         private RichTextBox txtBody;
         private TabPage CurlTab;
         private RichTextBox txtCurl;
+        private Panel panel5;
+        private Button button1;
     }
 }
