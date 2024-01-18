@@ -25,7 +25,7 @@ namespace Api_Buddy
     public partial class Main : Form
     {
 
-        int totalNodes = 0;
+        //int totalNodes = 0;
         int treeViewLevel = 0;
         string itemsLevel2Json = "";
         string highlightedNode = "";
@@ -93,8 +93,7 @@ namespace Api_Buddy
         {
             try
             {
-                txtHeader.Text = string.Empty;
-                //txtBody.Text = string.Empty;
+                txtHeader.Text = string.Empty;       
                 txtCurl.Text = string.Empty;
 
                 SelectectedItem.Root selectectedItem = JsonConvert.DeserializeObject<SelectectedItem.Root>(itemJson);
@@ -230,7 +229,7 @@ namespace Api_Buddy
             getAppSetting();
             getHostList();
             getCollections();
-            totalNodes = CountNodes(treeView.Nodes);
+            //totalNodes = CountNodes(treeView.Nodes);
             lblErrors.Text = "";
         }
 
@@ -428,12 +427,62 @@ namespace Api_Buddy
 
         private void treeView_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
+            string jsonFilePath = File.ReadAllText(AppSettings.filenameJson);
+            JObject root = JsonConvert.DeserializeObject<JObject>(jsonFilePath);
 
+            JToken resultNode = null;
+
+
+            resultNode = FindAndExtractNode(root["item"], e.Node.Text);
+
+
+
+            if (resultNode != null)
+            {
+                string selectedNodeItem = resultNode.ToString();
+
+                PopulateCollectionsSingleLayer(selectedNodeItem);
+                Debug.WriteLine(selectedNodeItem);
+            }
+            else
+            {
+                Debug.WriteLine("Node not found");
+            }
 
 
 
         }
 
+        static JToken FindAndExtractNode(JToken items, string nodeToSearch)
+        {
+            if (items != null && items.Type == JTokenType.Array)
+            {
+                Debug.WriteLine(nodeToSearch);
+                foreach (var item in items)
+                {
+                    var itemName = item["name"]?.ToString();
+                    if (itemName == nodeToSearch)
+                    {
+                        // Extract the entire node
+                        return item;
+                    }
+
+                    var subItems = item["item"];
+                    if (subItems != null && subItems.Type == JTokenType.Array)
+                    {
+                        // Recursively search for "instructionBasedEnrolment - cancel" in sub-items
+                        var result = FindAndExtractNode(subItems, nodeToSearch);
+                        if (result != null)
+                        {
+                            return result;
+                        }
+                    }
+                }
+            }
+
+            return null;
+
+        }
         private void SelectNode(string selectedNode)
         {
             //string selectedNode = e.Node.Text;
@@ -692,18 +741,18 @@ namespace Api_Buddy
                 Debug.WriteLine("Selected node level: " + treeViewLevel.ToString());
             }
 
-            if (treeViewLevel == 2)
-            {
-                string itemJson = extractLevel2NodesFromJson(selectedNode.Text);
-                PopulateCollectionsSingleLayer(itemJson);
-            }
-            else if (treeViewLevel == 3)
-            {
+            //if (treeViewLevel == 2)
+            //{
+            //    string itemJson = extractLevel2NodesFromJson(selectedNode.Text);
+            //    PopulateCollectionsSingleLayer(itemJson);
+            //}
+            //else if (treeViewLevel == 3)
+            //{
 
-                string itemJson = extractLevel3NodesFromJson(selectedNode.Text);
-                PopulateCollectionsSingleLayer(itemJson);
+            //    string itemJson = extractLevel3NodesFromJson(selectedNode.Text);
+            //    PopulateCollectionsSingleLayer(itemJson);
 
-            }
+            //}
 
 
         }
@@ -920,6 +969,12 @@ namespace Api_Buddy
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
             PopulateHeaderAndBody();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+
+
         }
     }
 

@@ -55,6 +55,7 @@
             HostPanel = new FlowLayoutPanel();
             statusStrip1 = new StatusStrip();
             lblErrors = new ToolStripStatusLabel();
+            toolStripStatusLabel2 = new ToolStripStatusLabel();
             toolStripStatusLabel1 = new ToolStripStatusLabel();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -342,6 +343,7 @@
             button1.TabIndex = 8;
             button1.Text = "Save";
             button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
             // 
             // HostPanel
             // 
@@ -354,7 +356,7 @@
             // 
             // statusStrip1
             // 
-            statusStrip1.Items.AddRange(new ToolStripItem[] { lblErrors, toolStripStatusLabel1 });
+            statusStrip1.Items.AddRange(new ToolStripItem[] { lblErrors, toolStripStatusLabel2, toolStripStatusLabel1 });
             statusStrip1.Location = new Point(5, 562);
             statusStrip1.Name = "statusStrip1";
             statusStrip1.Size = new Size(989, 22);
@@ -367,6 +369,13 @@
             lblErrors.Name = "lblErrors";
             lblErrors.Size = new Size(12, 17);
             lblErrors.Text = "-";
+            // 
+            // toolStripStatusLabel2
+            // 
+            toolStripStatusLabel2.BackColor = SystemColors.Control;
+            toolStripStatusLabel2.Name = "toolStripStatusLabel2";
+            toolStripStatusLabel2.Size = new Size(10, 17);
+            toolStripStatusLabel2.Text = "|";
             // 
             // toolStripStatusLabel1
             // 
@@ -444,5 +453,6 @@
         private Panel panel5;
         private Button button1;
         private ToolStripStatusLabel toolStripStatusLabel1;
+        private ToolStripStatusLabel toolStripStatusLabel2;
     }
 }
