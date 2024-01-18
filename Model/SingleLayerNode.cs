@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Api_Buddy.Model
 {
 
-    // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
+
     public class SingleLayerNode
     {
 

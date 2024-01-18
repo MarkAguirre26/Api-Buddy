@@ -8,7 +8,7 @@ namespace Api_Buddy.Model
 {
     public class SelectectedItem
     {
-        // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
+     
         public class Body
         {
             public string mode { get; set; }

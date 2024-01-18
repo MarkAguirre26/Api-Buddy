@@ -91,7 +91,7 @@
             // 
             splitContainer1.Panel2.Controls.Add(panel2);
             splitContainer1.Size = new Size(989, 554);
-            splitContainer1.SplitterDistance = 227;
+            splitContainer1.SplitterDistance = 302;
             splitContainer1.TabIndex = 0;
             // 
             // panel1
@@ -102,7 +102,7 @@
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(227, 554);
+            panel1.Size = new Size(302, 554);
             panel1.TabIndex = 0;
             // 
             // treeView
@@ -111,13 +111,16 @@
             treeView.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
             treeView.ImageIndex = 0;
             treeView.ImageList = imageList1;
+            treeView.LabelEdit = true;
             treeView.Location = new Point(0, 23);
             treeView.Name = "treeView";
             treeView.SelectedImageIndex = 0;
             treeView.ShowLines = false;
             treeView.ShowPlusMinus = false;
-            treeView.Size = new Size(227, 531);
+            treeView.Size = new Size(302, 531);
             treeView.TabIndex = 1;
+            treeView.BeforeLabelEdit += treeView_BeforeLabelEdit;
+            treeView.AfterLabelEdit += treeView_AfterLabelEdit;
             treeView.AfterCollapse += treeView_AfterCollapse;
             treeView.AfterExpand += treeView_AfterExpand;
             treeView.NodeMouseHover += treeView_NodeMouseHover;
@@ -139,13 +142,14 @@
             imageList1.Images.SetKeyName(5, "folder_open.png");
             imageList1.Images.SetKeyName(6, "get_.jpg");
             imageList1.Images.SetKeyName(7, "post_.jpg");
+            imageList1.Images.SetKeyName(8, "put.png");
             // 
             // txtSearchNode
             // 
             txtSearchNode.Dock = DockStyle.Top;
             txtSearchNode.Location = new Point(0, 0);
             txtSearchNode.Name = "txtSearchNode";
-            txtSearchNode.Size = new Size(227, 23);
+            txtSearchNode.Size = new Size(302, 23);
             txtSearchNode.TabIndex = 0;
             txtSearchNode.TextChanged += textBox1_TextChanged;
             txtSearchNode.KeyDown += txtSearchNode_KeyDown;
@@ -157,7 +161,7 @@
             panel2.Dock = DockStyle.Fill;
             panel2.Location = new Point(0, 0);
             panel2.Name = "panel2";
-            panel2.Size = new Size(758, 554);
+            panel2.Size = new Size(683, 554);
             panel2.TabIndex = 0;
             // 
             // panel4
@@ -170,7 +174,7 @@
             panel4.Dock = DockStyle.Fill;
             panel4.Location = new Point(0, 0);
             panel4.Name = "panel4";
-            panel4.Size = new Size(758, 554);
+            panel4.Size = new Size(683, 554);
             panel4.TabIndex = 0;
             // 
             // splitContainer2
@@ -189,8 +193,8 @@
             // 
             splitContainer2.Panel2.Controls.Add(txtResponse);
             splitContainer2.Panel2MinSize = 0;
-            splitContainer2.Size = new Size(758, 495);
-            splitContainer2.SplitterDistance = 389;
+            splitContainer2.Size = new Size(683, 495);
+            splitContainer2.SplitterDistance = 350;
             splitContainer2.TabIndex = 8;
             // 
             // tabControl1
@@ -202,7 +206,7 @@
             tabControl1.Location = new Point(0, 0);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(389, 495);
+            tabControl1.Size = new Size(350, 495);
             tabControl1.TabIndex = 4;
             tabControl1.SelectedIndexChanged += tabControl1_SelectedIndexChanged;
             // 
@@ -212,7 +216,7 @@
             HeaderTab.Location = new Point(4, 24);
             HeaderTab.Name = "HeaderTab";
             HeaderTab.Padding = new Padding(3);
-            HeaderTab.Size = new Size(381, 467);
+            HeaderTab.Size = new Size(342, 467);
             HeaderTab.TabIndex = 0;
             HeaderTab.Text = "Header";
             HeaderTab.UseVisualStyleBackColor = true;
@@ -224,7 +228,7 @@
             txtHeader.Dock = DockStyle.Fill;
             txtHeader.Location = new Point(3, 3);
             txtHeader.Name = "txtHeader";
-            txtHeader.Size = new Size(375, 461);
+            txtHeader.Size = new Size(336, 461);
             txtHeader.TabIndex = 3;
             txtHeader.Text = "";
             // 
@@ -234,7 +238,7 @@
             BodyTab.Location = new Point(4, 24);
             BodyTab.Name = "BodyTab";
             BodyTab.Padding = new Padding(3);
-            BodyTab.Size = new Size(381, 467);
+            BodyTab.Size = new Size(342, 467);
             BodyTab.TabIndex = 1;
             BodyTab.Text = "Body";
             BodyTab.UseVisualStyleBackColor = true;
@@ -246,7 +250,7 @@
             txtBody.Location = new Point(3, 3);
             txtBody.Name = "txtBody";
             txtBody.ShowSelectionMargin = true;
-            txtBody.Size = new Size(375, 461);
+            txtBody.Size = new Size(336, 461);
             txtBody.TabIndex = 0;
             txtBody.Text = "";
             // 
@@ -255,7 +259,7 @@
             CurlTab.Controls.Add(txtCurl);
             CurlTab.Location = new Point(4, 24);
             CurlTab.Name = "CurlTab";
-            CurlTab.Size = new Size(381, 467);
+            CurlTab.Size = new Size(342, 467);
             CurlTab.TabIndex = 2;
             CurlTab.Text = "Curl";
             CurlTab.UseVisualStyleBackColor = true;
@@ -269,7 +273,7 @@
             txtCurl.Name = "txtCurl";
             txtCurl.ReadOnly = true;
             txtCurl.ShowSelectionMargin = true;
-            txtCurl.Size = new Size(381, 467);
+            txtCurl.Size = new Size(342, 467);
             txtCurl.TabIndex = 1;
             txtCurl.Text = "";
             // 
@@ -279,7 +283,7 @@
             txtResponse.Location = new Point(0, 0);
             txtResponse.Name = "txtResponse";
             txtResponse.ShowSelectionMargin = true;
-            txtResponse.Size = new Size(365, 495);
+            txtResponse.Size = new Size(329, 495);
             txtResponse.TabIndex = 5;
             txtResponse.Text = "";
             // 
@@ -291,14 +295,14 @@
             panel3.Dock = DockStyle.Top;
             panel3.Location = new Point(0, 27);
             panel3.Name = "panel3";
-            panel3.Size = new Size(758, 32);
+            panel3.Size = new Size(683, 32);
             panel3.TabIndex = 1;
             // 
             // cmdSend
             // 
             cmdSend.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             cmdSend.Cursor = Cursors.Hand;
-            cmdSend.Location = new Point(681, 4);
+            cmdSend.Location = new Point(606, 4);
             cmdSend.Name = "cmdSend";
             cmdSend.Size = new Size(74, 25);
             cmdSend.TabIndex = 2;
@@ -311,13 +315,13 @@
             txtUrl.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             txtUrl.Location = new Point(86, 5);
             txtUrl.Name = "txtUrl";
-            txtUrl.Size = new Size(589, 23);
+            txtUrl.Size = new Size(514, 23);
             txtUrl.TabIndex = 1;
             // 
             // cboMethod
             // 
             cboMethod.FormattingEnabled = true;
-            cboMethod.Items.AddRange(new object[] { "GET", "POST" });
+            cboMethod.Items.AddRange(new object[] { "GET", "POST", "PUT" });
             cboMethod.Location = new Point(3, 5);
             cboMethod.Name = "cboMethod";
             cboMethod.Size = new Size(78, 23);
@@ -330,14 +334,14 @@
             panel5.Dock = DockStyle.Top;
             panel5.Location = new Point(0, 0);
             panel5.Name = "panel5";
-            panel5.Size = new Size(758, 27);
+            panel5.Size = new Size(683, 27);
             panel5.TabIndex = 0;
             // 
             // button1
             // 
             button1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             button1.Cursor = Cursors.Hand;
-            button1.Location = new Point(681, 2);
+            button1.Location = new Point(606, 2);
             button1.Name = "button1";
             button1.Size = new Size(74, 25);
             button1.TabIndex = 8;
@@ -392,6 +396,7 @@
             ClientSize = new Size(999, 589);
             Controls.Add(statusStrip1);
             Controls.Add(splitContainer1);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             KeyPreview = true;
             Name = "Main";
             Padding = new Padding(5);

@@ -10,5 +10,6 @@ namespace Api_Buddy.Class
     {
         public static bool createNoWindow = false;          
         public static string filenameJson = "";
+        public static string filenameBash = "";
     }
 }

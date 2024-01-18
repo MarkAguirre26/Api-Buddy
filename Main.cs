@@ -1,48 +1,39 @@
 using Api_Buddy.Class;
-using Api_Buddy.CustomControl;
+
 using Api_Buddy.Info;
 using Api_Buddy.Model;
-using Api_Buddy.WebCall;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Configuration;
+using System.Collections;
 using System.Diagnostics;
-using System.Dynamic;
+using System.DirectoryServices;
 using System.Reflection;
-using System.Runtime.Serialization.Json;
-using System.Security.Policy;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
-using System.Xml.Linq;
 using static Api_Buddy.Model.DoubleLayerNode;
 using static Api_Buddy.Model.SingleLayerNode;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 //
 
 namespace Api_Buddy
 {
     public partial class Main : Form
     {
+        string jsonCollectionContent = "";
+        string originalValue = "";
 
-        //int totalNodes = 0;
         int treeViewLevel = 0;
         string itemsLevel2Json = "";
-        string highlightedNode = "";
-        List<SingleLayerNodeMain> singleLayerCollections = new List<SingleLayerNodeMain>();
-        SingleLayerNodeMain singleLayerNodeMain = new SingleLayerNodeMain();
+        string selectedNodeRightAfterSelect = "";
+        List<(string, string, int)> nodeInfoList = new List<(string, string, int)>();
 
-        List<DoubaleLayerNodeMain> doubleLayerCollections = new List<DoubaleLayerNodeMain>();
         DoubaleLayerNodeMain doubleLayerNodeMain = new DoubaleLayerNodeMain();
 
-        //string selectedItemBody = "";
         List<SelectectedItem.Header> selectectedItemHeader = new List<SelectectedItem.Header>();
 
         TreeNode rootNode = new TreeNode();
         TreeNode secondNode = new TreeNode();
         TreeNode thirdNode = new TreeNode();
-        //Process gitBashProcess = new Process();
-        //bool isLoadingOpen = false;
+
         private TreeNode lastHoveredNode;
         public Main()
         {
@@ -93,9 +84,9 @@ namespace Api_Buddy
         {
             try
             {
-                txtHeader.Text = string.Empty;       
+                txtHeader.Text = string.Empty;
                 txtCurl.Text = string.Empty;
-
+                txtBody.Text = string.Empty;
                 SelectectedItem.Root selectectedItem = JsonConvert.DeserializeObject<SelectectedItem.Root>(itemJson);
                 selectectedItemHeader.Clear();
 
@@ -140,6 +131,9 @@ namespace Api_Buddy
             rootNode.ImageIndex = 3;
             rootNode.SelectedImageIndex = 3;
             treeView.Nodes.Add(rootNode);
+
+
+
 
 
             foreach (var items in itemsCollection)
@@ -229,7 +223,7 @@ namespace Api_Buddy
             getAppSetting();
             getHostList();
             getCollections();
-            //totalNodes = CountNodes(treeView.Nodes);
+
             lblErrors.Text = "";
         }
 
@@ -276,6 +270,13 @@ namespace Api_Buddy
                     //Debug.WriteLine($"filenameJson: {filenameJson}");
                     AppSettings.filenameJson = filenameJson;
                 }
+
+                if (properties.TryGetValue("filenameBash", out string filenameBash))
+                {
+                    //Debug.WriteLine($"filenameJson: {filenameJson}");
+                    AppSettings.filenameBash = filenameBash;
+                }
+
 
 
 
@@ -368,21 +369,155 @@ namespace Api_Buddy
             // Get all JSON files in the folder           
             treeView.Nodes.Clear();
 
-            string jsonContent = File.ReadAllText(AppSettings.filenameJson);
-            doubleLayerNodeMain = JsonConvert.DeserializeObject<DoubaleLayerNodeMain>(jsonContent);
+            jsonCollectionContent = File.ReadAllText(AppSettings.filenameJson);
+            nodeInfoList = ExtractNodeInfo(jsonCollectionContent);
 
-            Type doubleLayerClassType = typeof(DoubleLayerNode.Item);
-            PropertyInfo doubleLayerItemProperty = doubleLayerClassType.GetProperty("item");
-
-            if (doubleLayerItemProperty != null)
+            Debug.WriteLine("Node Information:");
+            populateTreeView(nodeInfoList);
+        }
+        private void populateTreeViewFromSearch(List<(string, string, int)> nodeInfoList)
+        {
+            treeView.Nodes.Clear();
+            foreach ((string nodeName, string method, int nodeLevel) in nodeInfoList)
             {
-                doubleLayerCollections.Add(doubleLayerNodeMain);
-                PopulateCollectionsDoubleLayer(doubleLayerNodeMain);
-            }
 
+                TreeNode rootNodeFromSearch = new TreeNode(nodeName);
+
+                if (method == "POST")
+                {
+                    rootNodeFromSearch.ImageIndex = 1;
+                    rootNodeFromSearch.SelectedImageIndex = 1;
+                }
+                else if (method == "GET")
+                {
+                    rootNodeFromSearch.ImageIndex = 0;
+                    rootNodeFromSearch.SelectedImageIndex = 0;
+                }
+                else if (method == "PUT")
+                {
+                    rootNodeFromSearch.ImageIndex = 8;
+                    rootNodeFromSearch.SelectedImageIndex = 8;
+                }
+                else
+                {
+                    rootNodeFromSearch.ImageIndex = 4;
+                    rootNodeFromSearch.SelectedImageIndex = 4;
+                }
+                treeView.Nodes.Add(rootNodeFromSearch);
+
+
+            }
 
         }
 
+
+        private void populateTreeView(List<(string, string, int)> nodeInfoList)
+        {
+            treeView.Nodes.Clear();
+            foreach ((string nodeName, string method, int nodeLevel) in nodeInfoList)
+            {
+
+                if (nodeLevel == 0)
+                {
+                    rootNode = new TreeNode(nodeName);
+                    rootNode.ImageIndex = 3;
+                    rootNode.SelectedImageIndex = 3;
+                    treeView.Nodes.Add(rootNode);
+                }
+                else if (nodeLevel == 1)
+                {
+                    secondNode = new TreeNode(nodeName);
+
+                    if (method == "POST")
+                    {
+                        secondNode.ImageIndex = 1;
+                        secondNode.SelectedImageIndex = 1;
+                    }
+                    else if (method == "GET")
+                    {
+                        secondNode.ImageIndex = 0;
+                        secondNode.SelectedImageIndex = 0;
+                    }
+                    else if (method == "PUT")
+                    {
+                        secondNode.ImageIndex = 8;
+                        secondNode.SelectedImageIndex = 8;
+                    }
+                    else
+                    {
+                        secondNode.ImageIndex = 4;
+                        secondNode.SelectedImageIndex = 4;
+                    }
+
+                    rootNode.Nodes.Add(secondNode);
+                }
+                else if (nodeLevel == 2)
+                {
+                    TreeNode childNode = new TreeNode(nodeName);
+
+                    if (method == "POST")
+                    {
+                        childNode.ImageIndex = 1;
+                        childNode.SelectedImageIndex = 1;
+                    }
+                    else if (method == "GET")
+                    {
+                        childNode.ImageIndex = 0;
+                        childNode.SelectedImageIndex = 0;
+                    }
+                    secondNode.Nodes.Add(childNode);
+                }
+
+            }
+            ExpandFirstLayer();
+
+
+
+        }
+        private void ExpandFirstLayer()
+        {
+            // Check if there are root nodes
+            if (treeView.Nodes.Count > 0)
+            {
+                // Expand each root node
+                foreach (TreeNode rootNode in treeView.Nodes)
+                {
+                    rootNode.Expand();
+                }
+            }
+        }
+
+        static List<(string, string, int)> ExtractNodeInfo(string jsonString)
+        {
+            List<(string, string, int)> nodeInfo = new List<(string, string, int)>();
+
+            JObject jsonObject = JObject.Parse(jsonString);
+
+            // Extract info from "info"
+            string infoName = (string)jsonObject["info"]["name"];
+            nodeInfo.Add((infoName, "", 0));
+
+            // Extract names and methods recursively from "item"
+            ExtractNodeInfoFromItem(jsonObject["item"], nodeInfo, 1);
+
+            return nodeInfo;
+        }
+
+        static void ExtractNodeInfoFromItem(JToken itemToken, List<(string, string, int)> nodeInfo, int currentLevel)
+        {
+            if (itemToken != null)
+            {
+                foreach (JToken subItemToken in itemToken.Children())
+                {
+                    string itemName = (string)subItemToken["name"];
+                    string method = (string)subItemToken["request"]?["method"];
+                    nodeInfo.Add((itemName, method ?? "", currentLevel));
+
+                    // Recursively extract names and methods from nested "item"
+                    ExtractNodeInfoFromItem(subItemToken["item"], nodeInfo, currentLevel + 1);
+                }
+            }
+        }
 
         private string getBaseUrl(string input)
         {
@@ -427,14 +562,10 @@ namespace Api_Buddy
 
         private void treeView_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
-            string jsonFilePath = File.ReadAllText(AppSettings.filenameJson);
-            JObject root = JsonConvert.DeserializeObject<JObject>(jsonFilePath);
 
-            JToken resultNode = null;
+            JObject root = JsonConvert.DeserializeObject<JObject>(jsonCollectionContent);
 
-
-            resultNode = FindAndExtractNode(root["item"], e.Node.Text);
-
+            JToken resultNode = FindAndExtractNode(root["item"], e.Node.Text);
 
 
             if (resultNode != null)
@@ -442,7 +573,7 @@ namespace Api_Buddy
                 string selectedNodeItem = resultNode.ToString();
 
                 PopulateCollectionsSingleLayer(selectedNodeItem);
-                Debug.WriteLine(selectedNodeItem);
+
             }
             else
             {
@@ -667,31 +798,41 @@ namespace Api_Buddy
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
-            // Search for a node with the specified text
-            TreeNode foundNode = FindNodeByText(treeView.Nodes, txtSearchNode.Text);
-
-            // Check if the node is found
-            if (foundNode != null)
+            if (txtSearchNode.Text != "")
             {
-                // Expand the root node
-                treeView.Nodes[0].Expand();
-                //Debug.WriteLine("Node found: " + foundNode.Text);
-                foreach (TreeNode node in treeView.Nodes)
-                {
+                string searchNodeName = txtSearchNode.Text;
+                var searchResults = SearchNodesByName(nodeInfoList, searchNodeName);
 
-                    if (foundNode.Text.Equals(foundNode.Text))
-                    {
-                        foundNode.ForeColor = Color.Blue;
 
-                    }
-                }
+                //Debug.WriteLine($"\nSearch Results for '{searchNodeName}':");
+                //foreach ((string nodeName, string method, int nodeLevel) in searchResults)
+                //{
+                //    Debug.WriteLine($"{new string('\t', nodeLevel)}{nodeName} (Level {nodeLevel}) - Method: {method}");
+                //}
+                populateTreeViewFromSearch(searchResults);
 
             }
             else
             {
-                SetDefaultNodeColor(treeView.Nodes);
+
+
+                populateTreeView(nodeInfoList);
             }
+
+
+
+
+
+
+
         }
+
+        static List<(string, string, int)> SearchNodesByName(List<(string, string, int)> nodeInfo, string nodeName)
+        {
+            return nodeInfo.FindAll(node => node.Item1.ToLower().StartsWith(nodeName.ToLower()));
+        }
+
+
 
         private void treeView_NodeMouseHover(object sender, TreeNodeMouseHoverEventArgs e)
         {
@@ -700,10 +841,6 @@ namespace Api_Buddy
                 lastHoveredNode.BackColor = Color.Empty;
             }
 
-
-
-            // Change the background color of the current hovered node
-            //e.Node.BackColor = Color.LightBlue;
 
 
             // Change the cursor to Hand when hovering over a node
@@ -718,18 +855,103 @@ namespace Api_Buddy
 
         }
 
+        static void DeleteNode(JToken token, string nodeName)
+        {
+            if (token.Type == JTokenType.Object)
+            {
+                foreach (var child in token.Children<JProperty>().ToList())
+                {
+                    if (child.Name == nodeName)
+                    {
+                        child.Remove();
+                    }
+                    else
+                    {
+                        DeleteNode(child.Value, nodeName);
+                    }
+                }
+            }
+            else if (token.Type == JTokenType.Array)
+            {
+                foreach (var item in token.Children())
+                {
+                    DeleteNode(item, nodeName);
+                }
+            }
+        }
+
+
         private void treeView_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Enter)
+            if (e.KeyCode == Keys.Delete)
             {
-                //SelectNode(highlightedNode);
+
+
+                // JObject jsonObject = JsonConvert.DeserializeObject<JObject>(jsonCollectionContent);
+
+                //JToken resultNode = FindAndExtractNode(jsonObject["item"], selectedNodeRightAfterSelect);
+
+                // if(resultNode != null)
+                // {
+                //    // string selectedNodeItem = resultNode.ToString();
+
+
+
+                //     DeleteNode(jsonObject, selectedNodeRightAfterSelect);
+
+                //     // Convert the modified JSON object back to string
+                //     string modifiedJsonString = jsonObject.ToString();
+
+                //     // Save the modified JSON to a file
+                //     File.WriteAllText(AppSettings.filenameJson, modifiedJsonString);
+
+
+
+
+
+
+                // }
+                // else
+                // {
+                //     Debug.WriteLine("Node not found");
+                // }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             }
             else if (e.KeyCode == Keys.F5)
             {
                 reloadData();
 
             }
+
+
+
+
+
+
+
+
+
         }
+
+
+
 
         private void treeView_AfterSelect(object sender, TreeViewEventArgs e)
         {
@@ -737,60 +959,13 @@ namespace Api_Buddy
 
             if (selectedNode != null)
             {
+                selectedNodeRightAfterSelect = e.Node.Text;
                 treeViewLevel = GetSelectedNodeLevel(selectedNode);
-                Debug.WriteLine("Selected node level: " + treeViewLevel.ToString());
+                Debug.WriteLine("Selected node: " + selectedNodeRightAfterSelect);
+
             }
 
-            //if (treeViewLevel == 2)
-            //{
-            //    string itemJson = extractLevel2NodesFromJson(selectedNode.Text);
-            //    PopulateCollectionsSingleLayer(itemJson);
-            //}
-            //else if (treeViewLevel == 3)
-            //{
 
-            //    string itemJson = extractLevel3NodesFromJson(selectedNode.Text);
-            //    PopulateCollectionsSingleLayer(itemJson);
-
-            //}
-
-
-        }
-
-        private string extractLevel3NodesFromJson(string nodeName)
-        {
-            try
-            {
-
-
-                //PopulateCollectionsDoubleLayer(null);
-
-                string jsonData = itemsLevel2Json;
-
-                // Parse JSON
-                JObject jsonObject = JObject.Parse(jsonData);
-
-                // Find the node for "1 getVitalityID"
-                JToken getVitalityIDNode = jsonObject["item"].FirstOrDefault(item => item["name"]?.ToString() == nodeName);
-
-                // Check if the node exists
-                if (getVitalityIDNode != null)
-                {
-                    // Print the result
-                    //Debug.WriteLine(getVitalityIDNode.ToString());
-                    return getVitalityIDNode.ToString();
-                }
-                //else
-                //{
-                //    Debug.WriteLine("Node not found");
-                //}
-            }
-            catch (Exception ex)
-            {
-                lblErrors.Text = ex.Message;
-                //MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            return "Node not found";
         }
 
         private int GetSelectedNodeLevel(TreeNode selectedNode)
@@ -861,7 +1036,7 @@ namespace Api_Buddy
 
                 ProcessStartInfo startInfo = new ProcessStartInfo
                 {
-                    FileName = "C:\\Program Files\\Git\\bin\\bash.exe", // Adjust the path based on your Git Bash installation location
+                    FileName = AppSettings.filenameBash, // Adjust the path based on your Git Bash installation location
                     RedirectStandardInput = true,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
@@ -933,28 +1108,7 @@ namespace Api_Buddy
         }
 
 
-        private string extractLevel2NodesFromJson(string nodeName)
-        {
-            //PopulateCollectionsDoubleLayer(null);
-            string jsonData = File.ReadAllText(AppSettings.filenameJson);
-            // Parse JSON
-            JObject jsonObject = JObject.Parse(jsonData);
-            // Find the node for "1 getVitalityID"
-            JToken getVitalityIDNode = jsonObject["item"].FirstOrDefault(item => item["name"]?.ToString() == nodeName);
-            // Check if the node exists
-            if (getVitalityIDNode != null)
-            {
-                // Print the result
-                //Debug.WriteLine(getVitalityIDNode.ToString());
-                itemsLevel2Json = getVitalityIDNode.ToString();
-            }
-            else
-            {
-                Debug.WriteLine("Node not found");
-            }
-            return itemsLevel2Json;
-        }
-        //
+
 
         private void Main_KeyDown(object sender, KeyEventArgs e)
         {
@@ -976,6 +1130,91 @@ namespace Api_Buddy
 
 
         }
+
+
+
+
+
+
+
+
+
+        static string ReadJsonFile(string filePath)
+        {
+            try
+            {
+                using (StreamReader reader = new StreamReader(filePath))
+                {
+                    return reader.ReadToEnd();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error reading JSON file: {ex.Message}");
+                return null;
+            }
+        }
+
+        private void treeView_AfterLabelEdit(object sender, NodeLabelEditEventArgs e)
+        {
+
+            if (e.Label != null)
+            {
+
+
+                // Parse JSON
+                JObject jsonObject = JObject.Parse(jsonCollectionContent);
+
+                // Traverse the JSON and replace the value
+                ReplaceJsonValue(jsonObject, originalValue, e.Label);
+
+                // Convert the modified JSON object back to string
+                string modifiedJsonString = jsonObject.ToString();
+
+                // Save the modified JSON to a file
+                File.WriteAllText(AppSettings.filenameJson, modifiedJsonString);
+
+
+
+            }
+        }
+
+
+        void ReplaceJsonValue(JToken token, string oldValue, string newValue)
+        {
+            if (token.Type == JTokenType.Object)
+            {
+                foreach (JProperty prop in token.Children<JProperty>().ToList())
+                {
+                    if (prop.Value.Type == JTokenType.String && prop.Value.ToString() == oldValue)
+                    {
+                        prop.Value = newValue;
+                    }
+                    else
+                    {
+                        ReplaceJsonValue(prop.Value, oldValue, newValue);
+                    }
+                }
+            }
+            else if (token.Type == JTokenType.Array)
+            {
+                foreach (JToken arrayItem in token.Children())
+                {
+                    ReplaceJsonValue(arrayItem, oldValue, newValue);
+                }
+            }
+        }
+
+
+        private void treeView_BeforeLabelEdit(object sender, NodeLabelEditEventArgs e)
+        {
+            // Allow editing for all nodes.
+            originalValue = e.Node.Text;
+            Debug.WriteLine("Before Edit");
+            e.CancelEdit = false;
+        }
+
+
     }
 
 
