@@ -8,8 +8,10 @@ namespace Api_Buddy.Class
 {
     public class AppSettings
     {
-        public static bool createNoWindow = false;          
+        public static bool createNoWindow = false;
+        public static bool expandTreeviewFirstLevel = false;
         public static string filenameJson = "";
         public static string filenameBash = "";
+
     }
 }

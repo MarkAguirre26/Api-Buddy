@@ -199,9 +199,9 @@
             // 
             // tabControl1
             // 
-            tabControl1.Controls.Add(HeaderTab);
             tabControl1.Controls.Add(BodyTab);
             tabControl1.Controls.Add(CurlTab);
+            tabControl1.Controls.Add(HeaderTab);
             tabControl1.Dock = DockStyle.Fill;
             tabControl1.Location = new Point(0, 0);
             tabControl1.Name = "tabControl1";

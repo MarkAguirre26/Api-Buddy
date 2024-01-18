@@ -277,6 +277,14 @@ namespace Api_Buddy
                     AppSettings.filenameBash = filenameBash;
                 }
 
+                if (properties.TryGetValue("expandTreeviewFirstLevel", out string expandTreeviewFirstLevel))
+                {
+                    AppSettings.expandTreeviewFirstLevel = false;
+                    if (expandTreeviewFirstLevel.Equals("true"))
+                    {
+                        AppSettings.expandTreeviewFirstLevel = true;
+                    }
+                }
 
 
 
@@ -469,7 +477,11 @@ namespace Api_Buddy
                 }
 
             }
-            ExpandFirstLayer();
+            if (AppSettings.expandTreeviewFirstLevel.Equals(true))
+            {
+                ExpandFirstLayer();
+            }
+
 
 
 
@@ -829,7 +841,7 @@ namespace Api_Buddy
 
         static List<(string, string, int)> SearchNodesByName(List<(string, string, int)> nodeInfo, string nodeName)
         {
-            return nodeInfo.FindAll(node => node.Item1.ToLower().StartsWith(nodeName.ToLower()));
+            return nodeInfo.FindAll(node => node.Item1.ToLower().Contains(nodeName.ToLower()));
         }
 
 
