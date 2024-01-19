@@ -10,8 +10,10 @@ using System.DirectoryServices;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 using static Api_Buddy.Model.DoubleLayerNode;
 using static Api_Buddy.Model.SingleLayerNode;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 //
 
 namespace Api_Buddy
@@ -102,12 +104,12 @@ namespace Api_Buddy
                     string u = selectectedItem.request.url.raw ?? "";
                     string b = getBaseUrl(u);
 
-                    txtUrl.Text = "http://" + getSelectedHost() + "" + u.Replace(b, "").Replace(" ", "%20").Replace("'", "%27").Replace("#", "%23");
+                    txtUrl.Text = getSelectedHost() + "" + u.Replace(b, "").Replace(" ", "%20").Replace("'", "%27").Replace("#", "%23");
                     if (selectectedItem.request.body != null)
                     {
                         txtBody.Text = selectectedItem.request.body.raw;
                     }
-
+                    MoveToEndTextBox();
 
                     PopulateHeaderAndBody();
                 }
@@ -216,6 +218,7 @@ namespace Api_Buddy
                 // Hide the specified tab
                 tabControl1.TabPages[tabIndexToHide].Hide();
             }
+
         }
 
         private void reloadData()
@@ -330,7 +333,7 @@ namespace Api_Buddy
             }
             else
             {
-                Console.WriteLine($"Folder not found: {folderPath}");
+                Debug.WriteLine($"Folder not found: {folderPath}");
             }
 
 
@@ -344,7 +347,7 @@ namespace Api_Buddy
             if (sender is RadioButton radioButton && radioButton.Checked)
             {
                 // Get the text of the selected radio button
-                string selectedHost = "http://" + radioButton.Text;
+                string selectedHost = radioButton.Text;
                 changeURlBaseUrl(selectedHost);
                 BuildCurlCommand(txtUrl.Text, cboMethod.Text);
             }
@@ -355,6 +358,7 @@ namespace Api_Buddy
             string b = getBaseUrl(txtUrl.Text);
 
             txtUrl.Text = txtUrl.Text.Replace(b, selectedHost);
+            MoveToEndTextBox();
         }
 
         private void CheckFirstRadioButton(Panel panel)
@@ -672,6 +676,9 @@ namespace Api_Buddy
             {
                 txtCurl.Text = BuildCurlCommand(txtUrl.Text, cboMethod.Text);
                 tabControl1.SelectedTab = CurlTab;
+
+                // Assuming textBox1 is the name of your TextBox
+                MoveToEndTextBox();
             }
             else if (tabControl1.SelectedTab == HeaderTab)
             {
@@ -700,6 +707,13 @@ namespace Api_Buddy
 
 
             }
+        }
+
+        private void MoveToEndTextBox()
+        {
+            txtUrl.SelectionStart = txtUrl.Text.Length;
+            txtUrl.SelectionLength = 0;
+            txtUrl.ScrollToCaret();
         }
 
         private void displayResponse(string response)
@@ -1226,7 +1240,41 @@ namespace Api_Buddy
             e.CancelEdit = false;
         }
 
+        private void textBox1_TextChanged_1(object sender, EventArgs e)
+        {
 
+        }
+
+        private void textBox1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                string searchText = txtSearchFromResponse.Text;
+
+                if (!string.IsNullOrEmpty(searchText))
+                {
+                    // Start searching from the beginning of the text
+                    int startIndex = 0;
+
+                    // Search for the text and get the index of the found text
+                    int foundIndex = txtResponse.Find(searchText, startIndex, RichTextBoxFinds.None);
+
+                    // Check if the text is found
+                    if (foundIndex != -1)
+                    {
+                        // Select the found text
+                        txtResponse.Select(foundIndex, searchText.Length);
+
+                        // Set the focus to the RichTextBox
+                        txtResponse.Focus();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Not found.");
+                    }
+                }
+            }
+        }
     }
 
 
