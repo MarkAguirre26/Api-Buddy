@@ -46,20 +46,20 @@
             HeaderTab = new TabPage();
             txtHeader = new RichTextBox();
             panel6 = new Panel();
-            txtSearchFromResponse = new TextBox();
+            panel7 = new Panel();
             txtResponse = new RichTextBox();
+            txtSearchFromResponse = new TextBox();
             panel3 = new Panel();
             cmdSend = new Button();
             txtUrl = new TextBox();
             cboMethod = new ComboBox();
             panel5 = new Panel();
-            button1 = new Button();
+            cmdSave = new Button();
             HostPanel = new FlowLayoutPanel();
             statusStrip1 = new StatusStrip();
             lblErrors = new ToolStripStatusLabel();
             toolStripStatusLabel2 = new ToolStripStatusLabel();
             toolStripStatusLabel1 = new ToolStripStatusLabel();
-            panel7 = new Panel();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -76,10 +76,10 @@
             CurlTab.SuspendLayout();
             HeaderTab.SuspendLayout();
             panel6.SuspendLayout();
+            panel7.SuspendLayout();
             panel3.SuspendLayout();
             panel5.SuspendLayout();
             statusStrip1.SuspendLayout();
-            panel7.SuspendLayout();
             SuspendLayout();
             // 
             // splitContainer1
@@ -292,15 +292,15 @@
             panel6.Size = new Size(329, 495);
             panel6.TabIndex = 0;
             // 
-            // txtSearchFromResponse
+            // panel7
             // 
-            txtSearchFromResponse.Dock = DockStyle.Top;
-            txtSearchFromResponse.Location = new Point(0, 0);
-            txtSearchFromResponse.Name = "txtSearchFromResponse";
-            txtSearchFromResponse.Size = new Size(329, 23);
-            txtSearchFromResponse.TabIndex = 0;
-            txtSearchFromResponse.TextChanged += textBox1_TextChanged_1;
-            txtSearchFromResponse.KeyDown += textBox1_KeyDown;
+            panel7.BackColor = SystemColors.AppWorkspace;
+            panel7.Controls.Add(txtResponse);
+            panel7.Dock = DockStyle.Fill;
+            panel7.Location = new Point(0, 23);
+            panel7.Name = "panel7";
+            panel7.Size = new Size(329, 472);
+            panel7.TabIndex = 1;
             // 
             // txtResponse
             // 
@@ -312,6 +312,16 @@
             txtResponse.Size = new Size(329, 472);
             txtResponse.TabIndex = 5;
             txtResponse.Text = "";
+            // 
+            // txtSearchFromResponse
+            // 
+            txtSearchFromResponse.Dock = DockStyle.Top;
+            txtSearchFromResponse.Location = new Point(0, 0);
+            txtSearchFromResponse.Name = "txtSearchFromResponse";
+            txtSearchFromResponse.Size = new Size(329, 23);
+            txtSearchFromResponse.TabIndex = 0;
+            txtSearchFromResponse.TextChanged += textBox1_TextChanged_1;
+            txtSearchFromResponse.KeyDown += textBox1_KeyDown;
             // 
             // panel3
             // 
@@ -343,6 +353,7 @@
             txtUrl.Name = "txtUrl";
             txtUrl.Size = new Size(514, 23);
             txtUrl.TabIndex = 1;
+            txtUrl.Enter += txtUrl_Enter;
             // 
             // cboMethod
             // 
@@ -355,7 +366,7 @@
             // 
             // panel5
             // 
-            panel5.Controls.Add(button1);
+            panel5.Controls.Add(cmdSave);
             panel5.Controls.Add(HostPanel);
             panel5.Dock = DockStyle.Top;
             panel5.Location = new Point(0, 0);
@@ -363,17 +374,17 @@
             panel5.Size = new Size(683, 27);
             panel5.TabIndex = 0;
             // 
-            // button1
+            // cmdSave
             // 
-            button1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            button1.Cursor = Cursors.Hand;
-            button1.Location = new Point(606, 2);
-            button1.Name = "button1";
-            button1.Size = new Size(74, 25);
-            button1.TabIndex = 8;
-            button1.Text = "Save";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
+            cmdSave.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            cmdSave.Cursor = Cursors.Hand;
+            cmdSave.Location = new Point(606, 2);
+            cmdSave.Name = "cmdSave";
+            cmdSave.Size = new Size(74, 25);
+            cmdSave.TabIndex = 8;
+            cmdSave.Text = "Save";
+            cmdSave.UseVisualStyleBackColor = true;
+            cmdSave.Click += button1_Click;
             // 
             // HostPanel
             // 
@@ -414,16 +425,6 @@
             toolStripStatusLabel1.Size = new Size(166, 17);
             toolStripStatusLabel1.Text = "Api Buddy by Generali FedDev";
             // 
-            // panel7
-            // 
-            panel7.BackColor = SystemColors.AppWorkspace;
-            panel7.Controls.Add(txtResponse);
-            panel7.Dock = DockStyle.Fill;
-            panel7.Location = new Point(0, 23);
-            panel7.Name = "panel7";
-            panel7.Size = new Size(329, 472);
-            panel7.TabIndex = 1;
-            // 
             // Main
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -459,12 +460,12 @@
             HeaderTab.ResumeLayout(false);
             panel6.ResumeLayout(false);
             panel6.PerformLayout();
+            panel7.ResumeLayout(false);
             panel3.ResumeLayout(false);
             panel3.PerformLayout();
             panel5.ResumeLayout(false);
             statusStrip1.ResumeLayout(false);
             statusStrip1.PerformLayout();
-            panel7.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -495,7 +496,7 @@
         private TabPage CurlTab;
         private RichTextBox txtCurl;
         private Panel panel5;
-        private Button button1;
+        private Button cmdSave;
         private ToolStripStatusLabel toolStripStatusLabel1;
         private ToolStripStatusLabel toolStripStatusLabel2;
         private TextBox txtSearchFromResponse;

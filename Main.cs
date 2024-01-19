@@ -20,6 +20,7 @@ namespace Api_Buddy
 {
     public partial class Main : Form
     {
+        string currentTxtUrlValue = "";
         string jsonCollectionContent = "";
         string originalValue = "";
 
@@ -734,6 +735,34 @@ namespace Api_Buddy
 
             //}
 
+            saveNewData();
+
+        }
+
+        private void saveNewData()
+        {
+            
+
+            string[] jsonContent = File.ReadAllLines(AppSettings.filenameJson);
+            string updatedJson = "";
+
+            foreach (string s in jsonContent)
+            {
+                if (s.Contains(currentTxtUrlValue))
+                {
+                    string updatedLine = s.Replace(currentTxtUrlValue, txtUrl.Text);
+                    updatedJson += updatedLine + Environment.NewLine;
+                }
+                else
+                {
+                    updatedJson += s + Environment.NewLine;
+                }
+            }
+
+            // Save the updated JSON to the file
+            File.WriteAllText(AppSettings.filenameJson, updatedJson);
+
+      
         }
 
         private void rbHeader_CheckedChanged(object sender, EventArgs e)
@@ -775,7 +804,7 @@ namespace Api_Buddy
             }
             // Add the URL
 
-
+            txtCurl.Text = curlCommand;
             //curlCommand = ReplaceSingleQuotes(curlCommand);
             // Return the final cURL command
             return curlCommand.Replace("''", "'");
@@ -1153,7 +1182,7 @@ namespace Api_Buddy
 
         private void button1_Click(object sender, EventArgs e)
         {
-
+            saveNewData();
 
         }
 
@@ -1274,6 +1303,11 @@ namespace Api_Buddy
                     }
                 }
             }
+        }
+
+        private void txtUrl_Enter(object sender, EventArgs e)
+        {
+            currentTxtUrlValue = txtUrl.Text;
         }
     }
 
