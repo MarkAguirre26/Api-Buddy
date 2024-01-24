@@ -14,7 +14,7 @@ using System.Windows.Forms;
 using static Api_Buddy.Model.DoubleLayerNode;
 using static Api_Buddy.Model.SingleLayerNode;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-//
+
 
 namespace Api_Buddy
 {
@@ -671,17 +671,16 @@ namespace Api_Buddy
         }
 
 
-        private void cmdSend_Click(object sender, EventArgs e)
+        private async void cmdSend_Click(object sender, EventArgs e)
         {
 
-            ExecuteCurlCommand();
+            await ExecuteCurlCommand();
 
-
-            saveNewData();
+            SaveNewData();
 
         }
 
-        private void saveNewData()
+        private void SaveNewData()
         {
 
 
@@ -805,11 +804,6 @@ namespace Api_Buddy
 
                 populateTreeView(nodeInfoList);
             }
-
-
-
-
-
 
 
         }
@@ -975,22 +969,12 @@ namespace Api_Buddy
 
                 // Expand the root node
                 treeView.Nodes[0].Expand();
-                //treeView.SelectedNode = treeView.Nodes[0];
-                //treeView.SelectedNode.EnsureVisible();
-                //treeView.Nodes[0].BackColor = Color.LightBlue;
 
 
             }
         }
 
 
-
-        private async Task PostRequestAsync()
-        {
-
-
-            ExecuteCurlCommand();
-        }
 
 
         private async Task ExecuteCurlCommand()
@@ -1221,18 +1205,18 @@ namespace Api_Buddy
 
         private void button1_Click_1(object sender, EventArgs e)
         {
-            saveNewData();
+            SaveNewData();
         }
 
         private void txtUrl_KeyDown(object sender, KeyEventArgs e)
         {
-            if(e.KeyCode == Keys.Enter)
+            if (e.KeyCode == Keys.Enter)
             {
 
                 ExecuteCurlCommand();
 
 
-                saveNewData();
+                SaveNewData();
             }
         }
     }
