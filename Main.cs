@@ -20,6 +20,7 @@ namespace Api_Buddy
 {
     public partial class Main : Form
     {
+
         string currentTxtUrlValue = "";
         string jsonCollectionContent = "";
         string originalValue = "";
@@ -125,76 +126,6 @@ namespace Api_Buddy
         }
 
 
-        private void PopulateCollectionsDoubleLayer(DoubaleLayerNodeMain doubleLayerNode)
-        {
-            string collectionName = doubleLayerNode.info.name;
-            List<DoubleLayerNode.Item> itemsCollection = doubleLayerNode.item;
-            // Root Level
-            rootNode = new TreeNode(collectionName);
-            rootNode.ImageIndex = 3;
-            rootNode.SelectedImageIndex = 3;
-            treeView.Nodes.Add(rootNode);
-
-
-
-
-
-            foreach (var items in itemsCollection)
-            {
-                // Parent Level
-                secondNode = new TreeNode(items.name);
-
-                if (items.request != null)
-                {
-
-
-                    if (items.request.method == "POST")
-                    {
-                        secondNode.ImageIndex = 1;
-                        secondNode.SelectedImageIndex = 1;
-                    }
-                    else
-                    {
-                        secondNode.ImageIndex = 0;
-                        secondNode.SelectedImageIndex = 0;
-                    }
-                }
-                else
-                {
-                    secondNode.ImageIndex = 4;
-                    secondNode.SelectedImageIndex = 4;
-                }
-
-
-                rootNode.Nodes.Add(secondNode);
-
-                if (items.item != null)
-                {
-                    foreach (var item in items.item)
-                    {
-
-                        // Child Level
-                        TreeNode childNode1 = new TreeNode(item.name);
-
-                        if (item.request.method == "GET")
-                        {
-                            childNode1.ImageIndex = 0;
-                            childNode1.SelectedImageIndex = 0;
-                        }
-                        else
-                        {
-                            childNode1.ImageIndex = 1;
-                            childNode1.SelectedImageIndex = 1;
-                        }
-
-
-                        secondNode.Nodes.Add(childNode1);
-
-
-                    }
-                }
-            }
-        }
 
         private int CountNodes(TreeNodeCollection nodes)
         {
@@ -289,6 +220,16 @@ namespace Api_Buddy
                         AppSettings.expandTreeviewFirstLevel = true;
                     }
                 }
+
+
+                if (properties.TryGetValue("sqlFolderCollection", out string sqlFolderCollection))
+                {
+                    AppSettings.sqlFolderCollection = sqlFolderCollection;
+
+                }
+
+
+
 
 
 
@@ -584,23 +525,35 @@ namespace Api_Buddy
 
             JToken resultNode = FindAndExtractNode(root["item"], e.Node.Text);
 
-
-            if (resultNode != null)
+            if (!txtSearchNode.Text.ToLower().Contains("sql:"))
             {
-                string selectedNodeItem = resultNode.ToString();
+                if (resultNode != null)
+                {
+                    string selectedNodeItem = resultNode.ToString();
 
-                PopulateCollectionsSingleLayer(selectedNodeItem);
+                    PopulateCollectionsSingleLayer(selectedNodeItem);
+
+                }
+                else
+                {
+                    Debug.WriteLine("Node not found");
+                }
 
             }
             else
             {
-                Debug.WriteLine("Node not found");
+                if (e.Node.Tag != null)
+                {
+                    string filePath = e.Node.Tag.ToString();
+                    // You can perform actions based on the selected file path (e.g., open the file)
+                    Console.WriteLine($"Double-clicked on file: {filePath}");
+                    string sqlContent = File.ReadAllText(AppSettings.sqlFolderCollection + "/" + filePath);
+                    txtResponse.Text = sqlContent;
+
+                }
             }
-
-
-
         }
-
+        //
         static JToken FindAndExtractNode(JToken items, string nodeToSearch)
         {
             if (items != null && items.Type == JTokenType.Array)
@@ -717,23 +670,12 @@ namespace Api_Buddy
             txtUrl.ScrollToCaret();
         }
 
-        private void displayResponse(string response)
-        {
-            txtResponse.Text = formattedJson(response);
-
-        }
 
         private void cmdSend_Click(object sender, EventArgs e)
         {
-            //if (isLoadingOpen == false)
-            //{
-            //processRequest();
-            ExecuteCurlCommand();
-            //}
-            //else
-            //{
 
-            //}
+            ExecuteCurlCommand();
+
 
             saveNewData();
 
@@ -741,7 +683,7 @@ namespace Api_Buddy
 
         private void saveNewData()
         {
-            
+
 
             string[] jsonContent = File.ReadAllLines(AppSettings.filenameJson);
             string updatedJson = "";
@@ -762,23 +704,9 @@ namespace Api_Buddy
             // Save the updated JSON to the file
             File.WriteAllText(AppSettings.filenameJson, updatedJson);
 
-      
+
         }
 
-        private void rbHeader_CheckedChanged(object sender, EventArgs e)
-        {
-            PopulateHeaderAndBody();
-        }
-
-        private void rbBody_CheckedChanged(object sender, EventArgs e)
-        {
-            PopulateHeaderAndBody();
-        }
-
-        private void rbCurl_CheckedChanged(object sender, EventArgs e)
-        {
-            PopulateHeaderAndBody();
-        }
 
 
         string BuildCurlCommand(string url, string method)
@@ -853,19 +781,23 @@ namespace Api_Buddy
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
+
+
+
             if (txtSearchNode.Text != "")
             {
-                string searchNodeName = txtSearchNode.Text;
-                var searchResults = SearchNodesByName(nodeInfoList, searchNodeName);
 
+                if (txtSearchNode.Text.Contains("sql:"))
+                {
+                    SearchSqlFiles(txtSearchNode.Text);
+                }
+                else
+                {
+                    string searchNodeName = txtSearchNode.Text;
+                    var searchResults = SearchNodesByName(nodeInfoList, searchNodeName);
 
-                //Debug.WriteLine($"\nSearch Results for '{searchNodeName}':");
-                //foreach ((string nodeName, string method, int nodeLevel) in searchResults)
-                //{
-                //    Debug.WriteLine($"{new string('\t', nodeLevel)}{nodeName} (Level {nodeLevel}) - Method: {method}");
-                //}
-                populateTreeViewFromSearch(searchResults);
-
+                    populateTreeViewFromSearch(searchResults);
+                }
             }
             else
             {
@@ -881,6 +813,53 @@ namespace Api_Buddy
 
 
         }
+
+        private void SearchSqlFiles(string searchPattern)
+        {
+
+            string folderPath = AppSettings.sqlFolderCollection;
+            try
+            {
+
+
+
+                string[] files = Directory.GetFiles(folderPath, "*.sql");
+
+                List<string> sqlFiles = files.ToList();
+
+
+
+                if (sqlFiles.Count > 0)
+                {
+                    treeView.Nodes.Clear();
+                    foreach (string sql in sqlFiles)
+                    {
+                        TreeNode node = new TreeNode(Path.GetFileName(sql));
+                        if (sql.ToLower().Contains(txtSearchNode.Text.Replace("sql:", "").ToLower()))
+                        {
+
+                            node.Tag = Path.GetFileName(sql); // Store the full file path in the Tag property for later use
+                            treeView.Nodes.Add(node);
+
+                        }
+                        else
+                        {
+                            //node.Tag = Path.GetFileName(sql); // Store the full file path in the Tag property for later use
+                            //treeView.Nodes.Add(node);
+                        }
+
+                    }
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"An error occurred: {ex.Message}");
+            }
+        }
+
+
 
         static List<(string, string, int)> SearchNodesByName(List<(string, string, int)> nodeInfo, string nodeName)
         {
@@ -938,69 +917,11 @@ namespace Api_Buddy
 
         private void treeView_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Delete)
-            {
-
-
-                // JObject jsonObject = JsonConvert.DeserializeObject<JObject>(jsonCollectionContent);
-
-                //JToken resultNode = FindAndExtractNode(jsonObject["item"], selectedNodeRightAfterSelect);
-
-                // if(resultNode != null)
-                // {
-                //    // string selectedNodeItem = resultNode.ToString();
-
-
-
-                //     DeleteNode(jsonObject, selectedNodeRightAfterSelect);
-
-                //     // Convert the modified JSON object back to string
-                //     string modifiedJsonString = jsonObject.ToString();
-
-                //     // Save the modified JSON to a file
-                //     File.WriteAllText(AppSettings.filenameJson, modifiedJsonString);
-
-
-
-
-
-
-                // }
-                // else
-                // {
-                //     Debug.WriteLine("Node not found");
-                // }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            }
-            else if (e.KeyCode == Keys.F5)
+            if (e.KeyCode == Keys.F5)
             {
                 reloadData();
 
             }
-
-
-
-
-
-
-
 
 
         }
@@ -1062,11 +983,7 @@ namespace Api_Buddy
             }
         }
 
-        private async void button1_Click_1Async(object sender, EventArgs e)
-        {
-            await PostRequestAsync();
 
-        }
 
         private async Task PostRequestAsync()
         {
@@ -1105,6 +1022,8 @@ namespace Api_Buddy
                 };
 
                 gitBashProcess.Start();
+
+
 
                 // Send the curl command to Git Bash
                 await Task.Run(() =>
@@ -1182,33 +1101,11 @@ namespace Api_Buddy
 
         private void button1_Click(object sender, EventArgs e)
         {
-            saveNewData();
+
+
 
         }
 
-
-
-
-
-
-
-
-
-        static string ReadJsonFile(string filePath)
-        {
-            try
-            {
-                using (StreamReader reader = new StreamReader(filePath))
-                {
-                    return reader.ReadToEnd();
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error reading JSON file: {ex.Message}");
-                return null;
-            }
-        }
 
         private void treeView_AfterLabelEdit(object sender, NodeLabelEditEventArgs e)
         {
@@ -1308,6 +1205,35 @@ namespace Api_Buddy
         private void txtUrl_Enter(object sender, EventArgs e)
         {
             currentTxtUrlValue = txtUrl.Text;
+        }
+
+        private void viewSourceToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Process.Start("explorer.exe", "Collections");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error opening folder: " + ex.Message);
+            }
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            saveNewData();
+        }
+
+        private void txtUrl_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.KeyCode == Keys.Enter)
+            {
+
+                ExecuteCurlCommand();
+
+
+                saveNewData();
+            }
         }
     }
 

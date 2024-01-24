@@ -12,6 +12,7 @@ namespace Api_Buddy.Class
         public static bool expandTreeviewFirstLevel = false;
         public static string filenameJson = "";
         public static string filenameBash = "";
+        public static string sqlFolderCollection = "";
 
     }
 }

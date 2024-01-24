@@ -33,6 +33,8 @@
             splitContainer1 = new SplitContainer();
             panel1 = new Panel();
             treeView = new TreeView();
+            contextMenuStrip1 = new ContextMenuStrip(components);
+            viewSourceToolStripMenuItem = new ToolStripMenuItem();
             imageList1 = new ImageList(components);
             txtSearchNode = new TextBox();
             panel2 = new Panel();
@@ -65,6 +67,7 @@
             splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
             panel1.SuspendLayout();
+            contextMenuStrip1.SuspendLayout();
             panel2.SuspendLayout();
             panel4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer2).BeginInit();
@@ -112,6 +115,7 @@
             // 
             // treeView
             // 
+            treeView.ContextMenuStrip = contextMenuStrip1;
             treeView.Dock = DockStyle.Fill;
             treeView.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
             treeView.ImageIndex = 0;
@@ -133,6 +137,19 @@
             treeView.NodeMouseDoubleClick += treeView_NodeMouseDoubleClick;
             treeView.KeyDown += treeView_KeyDown;
             treeView.MouseLeave += treeView_MouseLeave;
+            // 
+            // contextMenuStrip1
+            // 
+            contextMenuStrip1.Items.AddRange(new ToolStripItem[] { viewSourceToolStripMenuItem });
+            contextMenuStrip1.Name = "contextMenuStrip1";
+            contextMenuStrip1.Size = new Size(139, 26);
+            // 
+            // viewSourceToolStripMenuItem
+            // 
+            viewSourceToolStripMenuItem.Name = "viewSourceToolStripMenuItem";
+            viewSourceToolStripMenuItem.Size = new Size(138, 22);
+            viewSourceToolStripMenuItem.Text = "View Source";
+            viewSourceToolStripMenuItem.Click += viewSourceToolStripMenuItem_Click;
             // 
             // imageList1
             // 
@@ -354,6 +371,7 @@
             txtUrl.Size = new Size(514, 23);
             txtUrl.TabIndex = 1;
             txtUrl.Enter += txtUrl_Enter;
+            txtUrl.KeyDown += txtUrl_KeyDown;
             // 
             // cboMethod
             // 
@@ -378,21 +396,20 @@
             // 
             cmdSave.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             cmdSave.Cursor = Cursors.Hand;
-            cmdSave.Location = new Point(606, 2);
+            cmdSave.Location = new Point(606, 3);
             cmdSave.Name = "cmdSave";
             cmdSave.Size = new Size(74, 25);
             cmdSave.TabIndex = 8;
             cmdSave.Text = "Save";
             cmdSave.UseVisualStyleBackColor = true;
-            cmdSave.Click += button1_Click;
+            cmdSave.Click += button1_Click_1;
             // 
             // HostPanel
             // 
-            HostPanel.Dock = DockStyle.Left;
             HostPanel.Location = new Point(0, 0);
             HostPanel.Name = "HostPanel";
             HostPanel.Padding = new Padding(0, 1, 0, 0);
-            HostPanel.Size = new Size(608, 27);
+            HostPanel.Size = new Size(568, 27);
             HostPanel.TabIndex = 7;
             // 
             // statusStrip1
@@ -447,6 +464,7 @@
             splitContainer1.ResumeLayout(false);
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
+            contextMenuStrip1.ResumeLayout(false);
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
             panel4.ResumeLayout(false);
@@ -496,11 +514,13 @@
         private TabPage CurlTab;
         private RichTextBox txtCurl;
         private Panel panel5;
-        private Button cmdSave;
         private ToolStripStatusLabel toolStripStatusLabel1;
         private ToolStripStatusLabel toolStripStatusLabel2;
         private TextBox txtSearchFromResponse;
         private Panel panel6;
         private Panel panel7;
+        private ContextMenuStrip contextMenuStrip1;
+        private ToolStripMenuItem viewSourceToolStripMenuItem;
+        private Button cmdSave;
     }
 }
